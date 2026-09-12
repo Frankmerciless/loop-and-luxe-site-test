@@ -1,0 +1,22 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local environment
+.env
+.env.*
+
+# Editor folders
+.vscode/
+.idea/
+
+# Cache and generated files
+.cache/
+.wrangler/
+node_modules/
+
+# Logs
+*.log
+
+# Temporary build files
+/tmp/
