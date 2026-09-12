@@ -91,16 +91,23 @@ if (grid) {
 const drawer = document.querySelector('#cartDrawer'), scrim = document.querySelector('#scrim'), items = document.querySelector('#cartItems'), empty = document.querySelector('#cartEmpty');
 const productDialog = document.querySelector('#productDialog');
 const productDialogContent = document.querySelector('#productDialogContent');
-const preserveScrollPosition = (openDialog) => {
-  const scrollingElement = document.scrollingElement || document.documentElement || document.body;
-  const scrollY = window.scrollY || window.pageYOffset || scrollingElement.scrollTop || 0;
-  openDialog();
-  requestAnimationFrame(() => {
-    window.scrollTo({ top: scrollY, left: 0, behavior: 'auto' });
-    if (scrollingElement) {
-      scrollingElement.scrollTop = scrollY;
-    }
-  });
+const customDialog = document.querySelector('#customDialog');
+const dialogBackdrop = document.querySelector('#dialogBackdrop');
+const openDialog = (dialog) => {
+  if (!dialog) return;
+  dialog.classList.add('is-open');
+  dialog.setAttribute('aria-hidden', 'false');
+  if (dialogBackdrop) {
+    dialogBackdrop.classList.add('is-visible');
+  }
+};
+const closeDialog = (dialog) => {
+  if (!dialog) return;
+  dialog.classList.remove('is-open');
+  dialog.setAttribute('aria-hidden', 'true');
+  if (dialogBackdrop) {
+    dialogBackdrop.classList.remove('is-visible');
+  }
 };
 function renderCart() { const chosen = cart.map(id => products.find(p => p.id === id)).filter(Boolean); document.querySelector('#cartCount').textContent = chosen.length; items.innerHTML = chosen.map((p, i) => `<div class="cart-item"><img src="${p.image}" alt=""><div><h3>${p.name}</h3><p>${money(p.price)}</p></div><button class="remove" data-index="${i}">Remove</button></div>`).join(''); empty.hidden = chosen.length > 0; document.querySelector('#cartTotal').textContent = money(chosen.reduce((sum, p) => sum + p.price, 0)); localStorage.setItem('loop-luxe-cart', JSON.stringify(cart)); }
 function toggleCart(open) { drawer.classList.toggle('open', open); scrim.classList.toggle('show', open); drawer.setAttribute('aria-hidden', !open) }
@@ -119,7 +126,7 @@ function openProductPreview(productId) {
       <button class="button quick-add" data-id="${product.id}">Add to bag</button>
     </div>
   `;
-  preserveScrollPosition(() => productDialog.showModal());
+  openDialog(productDialog);
 }
 document.querySelectorAll('.mood-card').forEach(card => {
   card.addEventListener('click', () => {
@@ -155,17 +162,18 @@ document.addEventListener('click', e => {
   const remove = e.target.closest('.remove');
   if (remove) { cart.splice(Number(remove.dataset.index), 1); renderCart() }
   if (e.target.closest('[data-open-custom]')) {
-    const customDialog = document.querySelector('#customDialog');
-    if (customDialog) {
-      preserveScrollPosition(() => customDialog.showModal());
-    }
+    openDialog(customDialog);
   }
   if (e.target.closest('.dialog-close')) {
-    const dialog = e.target.closest('dialog');
-    if (dialog) dialog.close();
+    const modal = e.target.closest('.modal');
+    closeDialog(modal);
   }
   if (e.target.closest('.product-dialog-close')) {
-    productDialog.close();
+    closeDialog(productDialog);
+  }
+  if (e.target === dialogBackdrop) {
+    closeDialog(productDialog);
+    closeDialog(customDialog);
   }
 });
 document.querySelector('#checkout').addEventListener('click', () => { const chosen = cart.map(id => products.find(p => p.id === id)).filter(Boolean); if (!chosen.length) return; const lines = chosen.map(p => `• ${p.name} — ${money(p.price)}`).join('\n'); const subtotal = chosen.reduce((s, p) => s + p.price, 0); const text = `Hello Loop & Luxe! I would like to order:\n${lines}\n\nPieces: ${money(subtotal)}\nPlease confirm availability and the final delivery plan before payment.`; window.open(`https://wa.me/919099733579?text=${encodeURIComponent(text)}`, '_blank', 'noopener'); });
