@@ -692,13 +692,21 @@ h3 {
     text-transform: uppercase;
     letter-spacing: .14em;
     transition: all .2s ease;
-    border-radius: 999px
+    border-radius: 999px;
+    color: var(--ink)
 }
 
 .quick-add:hover {
     background: var(--ink);
     color: white;
     transform: translateY(-1px)
+}
+
+.product-dialog .button.quick-add,
+.product-dialog .button.quick-add:hover {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--ink)
 }
 
 .custom {

@@ -92,10 +92,14 @@ const drawer = document.querySelector('#cartDrawer'), scrim = document.querySele
 const productDialog = document.querySelector('#productDialog');
 const productDialogContent = document.querySelector('#productDialogContent');
 const preserveScrollPosition = (openDialog) => {
-  const scrollY = window.scrollY || window.pageYOffset || 0;
+  const scrollingElement = document.scrollingElement || document.documentElement || document.body;
+  const scrollY = window.scrollY || window.pageYOffset || scrollingElement.scrollTop || 0;
   openDialog();
   requestAnimationFrame(() => {
     window.scrollTo({ top: scrollY, left: 0, behavior: 'auto' });
+    if (scrollingElement) {
+      scrollingElement.scrollTop = scrollY;
+    }
   });
 };
 function renderCart() { const chosen = cart.map(id => products.find(p => p.id === id)).filter(Boolean); document.querySelector('#cartCount').textContent = chosen.length; items.innerHTML = chosen.map((p, i) => `<div class="cart-item"><img src="${p.image}" alt=""><div><h3>${p.name}</h3><p>${money(p.price)}</p></div><button class="remove" data-index="${i}">Remove</button></div>`).join(''); empty.hidden = chosen.length > 0; document.querySelector('#cartTotal').textContent = money(chosen.reduce((sum, p) => sum + p.price, 0)); localStorage.setItem('loop-luxe-cart', JSON.stringify(cart)); }
