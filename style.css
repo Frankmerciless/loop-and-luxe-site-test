@@ -304,7 +304,14 @@ h3 {
     letter-spacing: .14em;
     text-transform: uppercase;
     background: rgba(255, 255, 255, .35);
-    color: var(--ink)
+    color: var(--ink);
+    transition: color .2s ease, border-color .2s ease
+}
+
+.hero-metric:hover,
+.hero-metric:focus-visible {
+    color: var(--gold);
+    border-color: var(--gold)
 }
 
 .actions {
