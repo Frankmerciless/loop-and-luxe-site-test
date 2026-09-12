@@ -46,7 +46,7 @@ const getProductCategory = (product) => {
   return match ? match.key : 'curated';
 };
 const renderProductCard = (p) => `
-  <article class="product">
+  <article class="product" data-id="${p.id}">
     <div class="product-image"><img loading="lazy" src="${p.image}" alt="${p.name}"></div>
     <div class="product-info">
       <div>
@@ -89,8 +89,27 @@ if (grid) {
   renderProducts('#productGrid', products);
 }
 const drawer = document.querySelector('#cartDrawer'), scrim = document.querySelector('#scrim'), items = document.querySelector('#cartItems'), empty = document.querySelector('#cartEmpty');
+const productDialog = document.querySelector('#productDialog');
+const productDialogContent = document.querySelector('#productDialogContent');
 function renderCart() { const chosen = cart.map(id => products.find(p => p.id === id)).filter(Boolean); document.querySelector('#cartCount').textContent = chosen.length; items.innerHTML = chosen.map((p, i) => `<div class="cart-item"><img src="${p.image}" alt=""><div><h3>${p.name}</h3><p>${money(p.price)}</p></div><button class="remove" data-index="${i}">Remove</button></div>`).join(''); empty.hidden = chosen.length > 0; document.querySelector('#cartTotal').textContent = money(chosen.reduce((sum, p) => sum + p.price, 0)); localStorage.setItem('loop-luxe-cart', JSON.stringify(cart)); }
 function toggleCart(open) { drawer.classList.toggle('open', open); scrim.classList.toggle('show', open); drawer.setAttribute('aria-hidden', !open) }
+function openProductPreview(productId) {
+  const product = products.find(item => item.id === productId);
+  if (!product || !productDialog || !productDialogContent) return;
+  productDialogContent.innerHTML = `
+    <div class="product-dialog__image-wrap">
+      <img class="product-dialog__image" src="${product.image}" alt="${product.name}">
+    </div>
+    <div class="product-dialog__meta">
+      <p class="eyebrow">Loop &amp; Luxe</p>
+      <h3>${product.name}</h3>
+      <p>${product.note}</p>
+      <div class="product-dialog__price">${money(product.price)}</div>
+      <button class="button quick-add" data-id="${product.id}">Add to bag</button>
+    </div>
+  `;
+  productDialog.showModal();
+}
 document.querySelectorAll('.mood-card').forEach(card => {
   card.addEventListener('click', () => {
     document.querySelectorAll('.mood-card').forEach(item => item.classList.toggle('is-selected', item === card));
@@ -107,7 +126,32 @@ document.querySelectorAll('.mood-card').forEach(card => {
     }
   });
 });
-document.addEventListener('click', e => { const add = e.target.closest('[data-id]'); if (add) { cart.push(add.dataset.id); renderCart(); toggleCart(true) } if (e.target.closest('#cartButton')) toggleCart(true); if (e.target.closest('[data-close-cart]') || e.target === scrim) toggleCart(false); const remove = e.target.closest('.remove'); if (remove) { cart.splice(Number(remove.dataset.index), 1); renderCart() } if (e.target.closest('[data-open-custom]')) document.querySelector('#customDialog').showModal(); if (e.target.closest('.dialog-close')) document.querySelector('#customDialog').close(); });
+document.addEventListener('click', e => {
+  const add = e.target.closest('[data-id]');
+  const productCard = e.target.closest('.product');
+  if (add && e.target.closest('.quick-add')) {
+    cart.push(add.dataset.id);
+    renderCart();
+    toggleCart(true);
+    return;
+  }
+  if (productCard && !e.target.closest('.quick-add')) {
+    openProductPreview(productCard.dataset.id);
+    return;
+  }
+  if (e.target.closest('#cartButton')) toggleCart(true);
+  if (e.target.closest('[data-close-cart]') || e.target === scrim) toggleCart(false);
+  const remove = e.target.closest('.remove');
+  if (remove) { cart.splice(Number(remove.dataset.index), 1); renderCart() }
+  if (e.target.closest('[data-open-custom]')) document.querySelector('#customDialog').showModal();
+  if (e.target.closest('.dialog-close')) {
+    const dialog = e.target.closest('dialog');
+    if (dialog) dialog.close();
+  }
+  if (e.target.closest('.product-dialog-close')) {
+    productDialog.close();
+  }
+});
 document.querySelector('#checkout').addEventListener('click', () => { const chosen = cart.map(id => products.find(p => p.id === id)).filter(Boolean); if (!chosen.length) return; const lines = chosen.map(p => `• ${p.name} — ${money(p.price)}`).join('\n'); const subtotal = chosen.reduce((s, p) => s + p.price, 0); const text = `Hello Loop & Luxe! I would like to order:\n${lines}\n\nPieces: ${money(subtotal)}\nPlease confirm availability and the final delivery plan before payment.`; window.open(`https://wa.me/919099733579?text=${encodeURIComponent(text)}`, '_blank', 'noopener'); });
 document.querySelector('#customForm').addEventListener('submit', e => { e.preventDefault(); const f = new FormData(e.currentTarget); const text = `Hello Loop & Luxe! I’m ${f.get('name')} and I’d like a custom ${f.get('piece')}.\n\nMy idea: ${f.get('idea')}\n\nI understand custom pieces take up to 10 business days. Please let me know the next steps.`; window.open(`https://wa.me/919099733579?text=${encodeURIComponent(text)}`, '_blank', 'noopener'); });
 document.querySelector('#year').textContent = new Date().getFullYear(); renderCart();
