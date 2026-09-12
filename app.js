@@ -91,6 +91,13 @@ if (grid) {
 const drawer = document.querySelector('#cartDrawer'), scrim = document.querySelector('#scrim'), items = document.querySelector('#cartItems'), empty = document.querySelector('#cartEmpty');
 const productDialog = document.querySelector('#productDialog');
 const productDialogContent = document.querySelector('#productDialogContent');
+const preserveScrollPosition = (openDialog) => {
+  const scrollY = window.scrollY || window.pageYOffset || 0;
+  openDialog();
+  requestAnimationFrame(() => {
+    window.scrollTo({ top: scrollY, left: 0, behavior: 'auto' });
+  });
+};
 function renderCart() { const chosen = cart.map(id => products.find(p => p.id === id)).filter(Boolean); document.querySelector('#cartCount').textContent = chosen.length; items.innerHTML = chosen.map((p, i) => `<div class="cart-item"><img src="${p.image}" alt=""><div><h3>${p.name}</h3><p>${money(p.price)}</p></div><button class="remove" data-index="${i}">Remove</button></div>`).join(''); empty.hidden = chosen.length > 0; document.querySelector('#cartTotal').textContent = money(chosen.reduce((sum, p) => sum + p.price, 0)); localStorage.setItem('loop-luxe-cart', JSON.stringify(cart)); }
 function toggleCart(open) { drawer.classList.toggle('open', open); scrim.classList.toggle('show', open); drawer.setAttribute('aria-hidden', !open) }
 function openProductPreview(productId) {
@@ -108,7 +115,7 @@ function openProductPreview(productId) {
       <button class="button quick-add" data-id="${product.id}">Add to bag</button>
     </div>
   `;
-  productDialog.showModal();
+  preserveScrollPosition(() => productDialog.showModal());
 }
 document.querySelectorAll('.mood-card').forEach(card => {
   card.addEventListener('click', () => {
@@ -143,7 +150,12 @@ document.addEventListener('click', e => {
   if (e.target.closest('[data-close-cart]') || e.target === scrim) toggleCart(false);
   const remove = e.target.closest('.remove');
   if (remove) { cart.splice(Number(remove.dataset.index), 1); renderCart() }
-  if (e.target.closest('[data-open-custom]')) document.querySelector('#customDialog').showModal();
+  if (e.target.closest('[data-open-custom]')) {
+    const customDialog = document.querySelector('#customDialog');
+    if (customDialog) {
+      preserveScrollPosition(() => customDialog.showModal());
+    }
+  }
   if (e.target.closest('.dialog-close')) {
     const dialog = e.target.closest('dialog');
     if (dialog) dialog.close();
