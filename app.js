@@ -34,10 +34,53 @@ const products = [
 ];
 let cart = JSON.parse(localStorage.getItem('loop-luxe-cart') || '[]');
 const money = n => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(n);
+const productGroups = [
+  { key: 'earrings', label: 'Earrings', match: /earring|ear cuff|jumka|drop|honeycomb|nidar|sidi|peacock style|chain style|silver white pearl/i },
+  { key: 'necklaces', label: 'Necklaces', match: /neckpiece|choker|temple|golden flower|guinie|money tree|ginni|five layer|vertical long|peacock flying/i },
+  { key: 'pendants', label: 'Pendants', match: /pendant/i },
+  { key: 'cuffs', label: 'Cuffs & Bracelets', match: /cuff|bracelet/i }
+];
+const getProductCategory = (product) => {
+  const haystack = `${product.name} ${product.note}`.toLowerCase();
+  const match = productGroups.find(group => group.match.test(haystack));
+  return match ? match.key : 'curated';
+};
+const renderProductCard = (p) => `
+  <article class="product">
+    <div class="product-image"><img loading="lazy" src="${p.image}" alt="${p.name}"></div>
+    <div class="product-info">
+      <div>
+        <h3>${p.name}</h3>
+        <p>${p.note}</p>
+      </div>
+      <strong class="price">${money(p.price)}</strong>
+    </div>
+    <button class="quick-add" data-id="${p.id}">Add to bag</button>
+  </article>
+`;
 const renderProducts = (selector, list) => {
   const el = document.querySelector(selector);
   if (!el) return;
-  el.innerHTML = list.map(p => `<article class="product"><div class="product-image"><img loading="lazy" src="${p.image}" alt="${p.name}"></div><div class="product-info"><div><h3>${p.name}</h3><p>${p.note}</p></div><strong class="price">${money(p.price)}</strong></div><button class="quick-add" data-id="${p.id}">Add to bag</button></article>`).join('');
+  if (selector === '#productGrid') {
+    const grouped = productGroups
+      .map(group => ({ ...group, items: list.filter(product => getProductCategory(product) === group.key) }))
+      .filter(group => group.items.length > 0);
+
+    el.innerHTML = grouped.map(group => `
+      <section class="product-category">
+        <div class="category-header">
+          <h3>${group.label}</h3>
+          <span>${group.items.length} piece${group.items.length > 1 ? 's' : ''}</span>
+        </div>
+        <div class="product-grid product-grid--category">
+          ${group.items.map(renderProductCard).join('')}
+        </div>
+      </section>
+    `).join('');
+    return;
+  }
+
+  el.innerHTML = list.map(renderProductCard).join('');
 };
 const grid = document.querySelector('#productGrid');
 const newArrivals = products.slice(0, 4);
