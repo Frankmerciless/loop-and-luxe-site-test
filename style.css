@@ -28,18 +28,6 @@ a {
     text-decoration: none
 }
 
-button,
-a,
-.social-link,
-.hero-metric,
-.nav-link,
-.mood-card,
-.product,
-.quick-add,
-.footer-socials a {
-    transition: transform .22s ease, box-shadow .22s ease, color .22s ease, border-color .22s ease, background .22s ease, filter .22s ease
-}
-
 .announcement {
     background: #27251f;
     color: #f9f3e8;
@@ -78,17 +66,15 @@ header {
     text-transform: uppercase;
     letter-spacing: .12em;
     font-size: 11px;
-    transition: color .2s ease, transform .2s ease
+    transition: color .2s ease
 }
 
 .nav-link:hover,
 .nav-link:focus-visible {
-    color: var(--gold);
-    transform: translateY(-2px) scale(1.03)
+    color: var(--gold)
 }
 
-.nav-icon,
-.bag-icon {
+.nav-icon {
     width: 16px;
     height: 16px;
     stroke: currentColor;
@@ -105,65 +91,88 @@ header {
     gap: 8px;
     background: transparent;
     text-transform: uppercase;
-    letter-spacing: .1em;
+    letter-spacing: .12em;
     font-size: 11px;
     color: var(--ink);
-    border: 1.2px solid var(--ink);
-    border-radius: 999px;
-    padding: 8px 12px;
-    min-height: 38px
+    font-weight: 700;
+    padding: 0
+}
+
+.bag-icon {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round
 }
 
 .bag-text {
     font-size: 11px;
-    letter-spacing: .12em;
-    text-transform: uppercase
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    font-weight: 700
 }
 
 .cart-badge {
     display: inline-grid;
     place-items: center;
-    width: 18px;
-    height: 18px;
-    border: 1.2px solid var(--ink);
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid var(--ink);
     border-radius: 50%;
     font-size: 10px;
     line-height: 1;
-    margin-left: 2px
+    font-weight: 700
 }
 
-.cart--footer {
-    border: 0;
-    padding: 0;
-    background: transparent
-}
-
+.header-socials,
+.social-strip,
 .social-link {
+    display: none !important
+}
+
+.footer-socials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin-bottom: 10px;
+    flex-wrap: wrap
+}
+
+.footer-socials a {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    border: 1.5px solid var(--ink);
-    border-radius: 50%;
-    color: var(--ink);
-    transition: color .2s ease, border-color .2s ease, transform .2s ease
+    gap: 8px;
+    min-height: 32px;
+    color: #f5efe9;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    transition: transform .2s ease, color .2s ease
 }
 
-.social-link svg {
-    width: 15px;
-    height: 15px;
+.footer-socials a:hover,
+.footer-socials a:focus-visible {
+    transform: translateY(-1px);
+    color: var(--gold)
+}
+
+.footer-socials svg {
+    width: 14px;
+    height: 14px;
     stroke: currentColor;
     fill: none;
-    stroke-width: 1.7;
+    stroke-width: 1.8;
     stroke-linecap: round;
     stroke-linejoin: round
 }
 
-.social-link:hover {
-    color: var(--gold);
-    border-color: var(--gold);
-    transform: translateY(-1px)
+.footer-socials a:nth-child(3) svg path:first-child {
+    fill: none
 }
 
 .brand {
@@ -276,27 +285,13 @@ h3 {
     margin-top: 22px
 }
 
-.hero-metric {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+.hero-metrics span {
     padding: 8px 12px;
     border: 1px solid var(--line);
     font-size: 10px;
     letter-spacing: .14em;
     text-transform: uppercase;
-    background: rgba(255, 255, 255, .35);
-    box-shadow: 0 0 0 rgba(28, 27, 24, 0);
-    cursor: pointer;
-    color: var(--ink)
-}
-
-.hero-metric:hover,
-.hero-metric:focus-visible {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 14px 28px rgba(28, 27, 24, .08);
-    border-color: var(--gold);
-    color: var(--gold)
+    background: rgba(255, 255, 255, .35)
 }
 
 .actions {
@@ -337,27 +332,13 @@ h3 {
 
 .hero-image {
     position: relative;
-    height: 500px;
-    animation: floatDrift 8s ease-in-out infinite
-}
-
-.hero-image::before {
-    content: "";
-    position: absolute;
-    inset: 8% 6% 10% 8%;
-    background: radial-gradient(circle at center, rgba(170, 135, 84, .18), rgba(170, 135, 84, 0) 60%);
-    filter: blur(18px);
-    z-index: 0;
-    animation: glowPulse 7s ease-in-out infinite
+    height: 500px
 }
 
 .hero-image img {
-    position: relative;
-    z-index: 1;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    animation: cascadeFloat 9s ease-in-out infinite alternate
+    object-fit: cover
 }
 
 .stamp {
@@ -559,163 +540,13 @@ h3 {
     line-height: 1.7
 }
 
-.photo-marquee {
-    max-width: 100%;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    overflow: hidden;
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-    background: rgba(255, 255, 255, .22)
-}
-
-.photo-marquee__track {
-    display: flex;
-    width: max-content;
-    gap: 22px;
-    animation: marquee-scroll 26s linear infinite
-}
-
-.photo-marquee__group {
-    display: flex;
-    gap: 22px;
-    align-items: center;
-    flex-shrink: 0
-}
-
-.photo-card {
-    width: 210px;
-    height: 260px;
-    flex-shrink: 0;
-    border: 1px solid rgba(38, 37, 32, .08);
-    background: linear-gradient(180deg, #f7f1e8, #f2eae0);
-    border-radius: 18px;
-    overflow: hidden;
-    margin: 0;
-    box-shadow: 0 10px 18px rgba(28, 27, 24, .04)
-}
-
-.photo-card img {
-    width: 100%;
-    height: 200px;
-    object-fit: scale-down;
-    object-position: center;
-    display: block;
-    padding: 18px 18px 10px;
-    box-sizing: border-box;
-    background: transparent
-}
-
-.photo-card figcaption {
-    text-align: center;
-    font-size: 10px;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: #4d4842;
-    padding: 0 10px 14px
-}
-
-@keyframes marquee-scroll {
-    from {
-        transform: translateX(0)
-    }
-
-    to {
-        transform: translateX(-50%)
-    }
-}
-
-@keyframes floatDrift {
-
-    0%,
-    100% {
-        transform: translateY(0px)
-    }
-
-    50% {
-        transform: translateY(-7px)
-    }
-}
-
-@keyframes cascadeFloat {
-    0% {
-        transform: translateY(0) scale(1)
-    }
-
-    50% {
-        transform: translateY(-6px) scale(1.01)
-    }
-
-    100% {
-        transform: translateY(3px) scale(1.02)
-    }
-}
-
-@keyframes glowPulse {
-
-    0%,
-    100% {
-        opacity: .55;
-        transform: scale(1)
-    }
-
-    50% {
-        opacity: .9;
-        transform: scale(1.08)
-    }
-}
-
 @media (max-width: 900px) {
-    .photo-card {
-        width: 170px;
-        height: 220px
-    }
-
     header {
-        gap: 12px;
-        flex-wrap: wrap;
-        height: auto;
-        padding-top: 18px;
-        padding-bottom: 18px
+        gap: 12px
     }
 
     .main-nav {
-        width: 100%;
-        justify-content: center;
-        gap: 12px;
-        margin: 0
-    }
-
-    .nav-link span {
-        display: none
-    }
-
-    .header-socials {
-        display: none
-    }
-
-    .social-strip {
-        flex-wrap: wrap;
-        gap: 12px;
-        padding-bottom: 24px
-    }
-
-    footer {
-        grid-template-columns: 1fr;
-        gap: 18px;
-        text-align: center
-    }
-
-    footer .brand {
-        justify-self: center
-    }
-
-    footer p {
-        justify-self: center
-    }
-
-    .footer-socials {
-        width: 100%
+        gap: 12px
     }
 }
 
@@ -996,41 +827,6 @@ footer div {
     letter-spacing: .12em
 }
 
-.footer-socials {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 18px;
-    flex-wrap: wrap
-}
-
-.footer-socials a {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 10px;
-    border: 1px solid rgba(238, 231, 220, .35);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, .02)
-}
-
-.footer-socials a:hover,
-.footer-socials a:focus-visible {
-    transform: translateY(-2px) scale(1.02);
-    border-color: rgba(238, 231, 220, .7);
-    color: #f5d7a5
-}
-
-.footer-socials svg {
-    width: 14px;
-    height: 14px;
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 1.8;
-    stroke-linecap: round;
-    stroke-linejoin: round
-}
-
 footer p {
     justify-self: end;
     color: #bbb2a4;
@@ -1213,11 +1009,56 @@ textarea {
 
 @media(max-width:760px) {
     header {
-        height: 75px
+        height: auto;
+        padding: 12px 18px;
+        gap: 8px
     }
 
-    header nav {
-        display: none
+    .brand {
+        font-size: 15px;
+        letter-spacing: .05em;
+        flex-shrink: 0
+    }
+
+    .brand small {
+        font-size: 6px;
+        letter-spacing: .15em;
+        margin-top: 4px
+    }
+
+    .main-nav {
+        gap: 8px;
+        margin: 0;
+        flex-shrink: 1
+    }
+
+    .nav-link {
+        gap: 4px;
+        font-size: 8px;
+        letter-spacing: .08em
+    }
+
+    .nav-icon {
+        width: 11px;
+        height: 11px
+    }
+
+    .cart {
+        gap: 6px;
+        font-size: 9px;
+        letter-spacing: .1em;
+        flex-shrink: 0
+    }
+
+    .bag-text {
+        font-size: 9px;
+        letter-spacing: .12em
+    }
+
+    .cart-badge {
+        width: 18px;
+        height: 18px;
+        font-size: 9px
     }
 
     .hero {
